@@ -1,0 +1,8 @@
+
+.main2{
+  background: transparent; /* Transparent background */
+  backdrop-filter: blur(20px); /* Blurs the background behind this element */
+  padding: 20px;
+  border-radius: 10px;
+  width: vw;
+}
