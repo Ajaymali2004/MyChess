@@ -46,7 +46,7 @@ const DropdownItem = ({
           onClick={() => setModalShow(2)}
           className="block w-full py-2 px-4 text-left text-slate-300 hover:bg-green-600"
         >
-          Sign-up
+          Sign In
         </button>
       </>
     )}
@@ -61,6 +61,7 @@ const isValidToken = async (auth_token) => {
         "auth-token": auth_token,
       },
     });
+    console.log(response);
     if (!response.ok) {
       return { res: false, name: null };
     }
@@ -167,7 +168,7 @@ const Navbar = () => {
                 onClick={() => setModalShow(2)}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
-                Sign-up
+                Sign In
               </button>
             </>
           )}
