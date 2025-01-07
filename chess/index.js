@@ -1,6 +1,9 @@
+require('dotenv').config();
+
 const { WebSocketServer } = require("ws");
 const { GameManager } = require("./src/Game/GameManager.js");
-const wss = new WebSocketServer({ host: '0.0.0.0',port: 8080 });
+const PORT = process.env.PORT || 8080;
+const wss = new WebSocketServer({ host: '0.0.0.0',port: PORT });
 
 const connectToWSS = () => {
   const gameManager = new GameManager();

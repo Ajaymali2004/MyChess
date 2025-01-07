@@ -34,7 +34,6 @@ export default function Game() {
 
           break;
         case MOVE:
-          console.log(message);
           const { move, promo } = message.payload;
           if (promo) {
             chess.move({ ...move, promotion: "q" });

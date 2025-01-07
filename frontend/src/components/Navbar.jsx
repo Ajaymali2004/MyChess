@@ -61,16 +61,15 @@ const isValidToken = async (auth_token) => {
         "auth-token": auth_token,
       },
     });
-    console.log(response);
     if (!response.ok) {
       return { res: false, name: null };
     }
+    console.log(response);
     const data = await response.json();
     if (data && data.success) {
       return { res: data.success, name: data.user.username };
     }
   } catch (error) {
-    console.error("Error validating token:", error.message);
     return { res: false, name: null };
   }
 };
@@ -78,7 +77,6 @@ const check=async(setLogin)=>{
   const auth_token = localStorage.getItem("token");
   if (auth_token) {
     const name=await isValidToken(auth_token);
-    console.log(name);
     if(name.res){
       setLogin(name.name);
       }

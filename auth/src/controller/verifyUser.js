@@ -1,19 +1,23 @@
 const nodemailer = require("nodemailer");
+const User = require("../models/User");
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
   auth: {
     user: "ajaymali8428@gmail.com",
-    pass: "hlwbyepkwwfcwtxn",
+    pass: "chzoglmwgylfrjlp",
   },
 });
 const verifyUser = async (req, res) => {
-  const { email, otp } = req.body; // Ensure destructuring matches the expected body structure
+  const { email, otp } = req.body;
+  let user = await User.findOne({ email: email });
+  if (user) {
+    return res.status(400).json({ message: "User already exists" });
+  }
   try {
-    // Use the `transporter` object to send email
     const info = await transporter.sendMail({
-      to: email, // Corrected syntax; remove extra period
+      to: email,
       subject: "Rock_Bishop: Email Verification",
       text: `Your OTP is ${otp}.`, // Fallback text for non-HTML email clients
       html: `
@@ -29,12 +33,21 @@ const verifyUser = async (req, res) => {
       `,
     });
     if (info.rejected && info.rejected.length > 0) {
-      return res.status(401).json({ success: false, message: "Email delivery failed." });
+      return res
+        .status(401)
+        .json({ success: false, message: "Email delivery failed." });
     }
 
-    return res.status(200).json({ success: true, message: "Email sent successfully." });
+    return res
+      .status(200)
+      .json({ success: true, message: "Email sent successfully." });
   } catch (error) {
-    return res.status(500).json({ success: false, error: error.message || "Internal Server Error" });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: error.message || "Internal Server Error",
+      });
   }
 };
 

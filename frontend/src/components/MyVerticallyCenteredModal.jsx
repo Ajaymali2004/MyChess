@@ -48,6 +48,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
   const sendOtp = async () => {
     setOtpSent(true);
     const response = await generateOTP(data.email);
+    if (response === "User already exists") setOtpSent(false);
     setError(response);
   };
 
@@ -74,16 +75,14 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
       handleClose();
       navigate("./");
     } else {
-      setError(true);
+      setError(json.message);
     }
   };
-  
+
   const handleLogin = (e) => {
-    console.log("LOGIN");
     e.preventDefault();
     login(data.email, data.password);
   };
-
 
   const signIn = async (username, email, password) => {
     const response = await fetch("http://localhost:5000/api/auth/signin", {
@@ -163,15 +162,19 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
             </>
           )}
           {show !== 1 && !otpSent && (
-            <div className="text-right mt-2">
-              <p
-                onClick={sendOtp}
-                className="text-info"
-                style={{ fontSize: "0.875rem", cursor: "pointer" }}
-              >
-                {verifyOption}
-              </p>
-            </div>
+            <div className="d-flex justify-content-between mt-2">
+            {error && error === "User already exists" && (
+              <span className="text-danger">{error}</span>
+            )}
+            <span
+              onClick={sendOtp}
+              className="text-info"
+              style={{ fontSize: "0.875rem", cursor: "pointer" }}
+            >
+              {verifyOption}
+            </span>
+          </div>
+          
           )}
           <div className="mb-3 d-flex">
             <input
@@ -184,7 +187,9 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
             />
             <MdAlternateEmail className="fs-5 m-2" />
           </div>
-          {error && <p className="text-danger">{error}</p>}
+          {error && error !== "User already exists" && (
+            <p className="text-danger">{error}</p>
+          )}
           {otpSent && (
             <div className="mb-3 d-flex">
               <input

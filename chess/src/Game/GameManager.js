@@ -30,7 +30,6 @@ class GameManager {
           this.#pendingUser = socket;
         }
       } else if (mssg.type === MOVE) {
-        console.log(mssg);
         const game = this.#games.find(
           (game) => game.p1 === socket || game.p2 === socket
         );

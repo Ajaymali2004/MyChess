@@ -1,8 +1,9 @@
+require('dotenv').config();
 const mongoose =require('mongoose');
-const mongoURI = "mongodb://localhost:27017/rock_bishop";
+const mongoURI = process.env.MONGO_URL;
 
 const connectToMongo = () => {
         mongoose.connect(mongoURI);
-        console.log("Connected to MongoDB successfully");
+        console.log("Connected to MongoDB");
 };
 module.exports = connectToMongo;
