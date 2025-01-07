@@ -54,7 +54,7 @@ const DropdownItem = ({
 );
 const isValidToken = async (auth_token) => {
   try {
-    const response = await fetch("http://rock-bishop-auth.onrender.com/api/auth/login", {
+    const response = await fetch("https://rock-bishop-auth.onrender.com/api/auth/login", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
