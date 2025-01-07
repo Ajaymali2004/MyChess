@@ -79,7 +79,7 @@ export default function BlakeBoard({ board, setBoard, chess, socket, isP1 }) {
               {square && (
                 <img
                   src={`/${
-                    square.color === "b" ? square.type : `${square.type} w`
+                    square.color === "b" ? square.type : `${square.type}w`
                   }.png`}
                   className={imageSizeClasses}
                   alt={square.type}
