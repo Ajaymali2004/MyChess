@@ -1,6 +1,6 @@
 const otpStore = {};
 const sendMail = async (email,otp) => {
-  const response = await fetch("http://localhost:5000/api/auth/verifyUser", {
+  const response = await fetch("http://rock-bishop-auth.onrender.com/api/auth/verifyUser", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
