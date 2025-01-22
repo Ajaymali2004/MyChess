@@ -1,30 +1,42 @@
 import React, { useEffect, useState } from "react";
-const WS_URL = "https://mychess-connector.onrender.com";
+import { WS_URL } from "../../backendLinks";
 
 export default function useSocket() {
-  const [soket, setSocket] = useState(null);
-  useEffect(() => {
-    const socket = new WebSocket(WS_URL);
+  const [socket, setSocket] = useState(null);
 
-    socket.onopen = () => {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found in localStorage");
+      return;
+    }
+
+    const socketInstance = new WebSocket(`${WS_URL}?token=${token}`);
+    
+    socketInstance.onopen = () => {
       console.log("WebSocket connection established");
-      setSocket(socket);
+      setSocket(socketInstance);
     };
 
-    socket.onmessage = (event) => {
+    socketInstance.onmessage = (event) => {
       console.log("Message from server: ", event.data);
     };
 
-    socket.onclose = () => {
+    socketInstance.onclose = () => {
       console.log("WebSocket connection closed");
       setSocket(null);
     };
 
-    socket.onerror = (error) => {
-      console.log("WebSocket error: ", error);
+    socketInstance.onerror = (error) => {
+      console.error("WebSocket error: ", error);
     };
 
-    return () => socket.close();
+    return () => {
+      if (socketInstance.readyState === WebSocket.OPEN) {
+        socketInstance.close();
+      }
+    };
   }, []);
-  return soket;
+
+  return socket;
 }

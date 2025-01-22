@@ -5,6 +5,7 @@ import { GiChessKing } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { generateOTP, otpChecker } from "./Otp";
+import { Auth_URL } from "../../backendLinks";
 
 function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -61,7 +62,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
     }
   };
   const login = async (email, password) => {
-    const response = await fetch("https://rock-bishop-auth.onrender.com/api/auth/login", {
+    const response = await fetch(Auth_URL+"api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -85,7 +86,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
   };
 
   const signIn = async (username, email, password) => {
-    const response = await fetch("https://rock-bishop-auth.onrender.com/api/auth/signin", {
+    const response = await fetch(Auth_URL+"api/auth/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

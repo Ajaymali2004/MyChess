@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MyVerticallyCenteredModal from "./MyVerticallyCenteredModal";
+import { Auth_URL } from "../../backendLinks";
 
 const DropdownItem = ({
   setLogin,
@@ -11,7 +12,7 @@ const DropdownItem = ({
   nav,
   setModalShow,
 }) => (
-  <div className="relative">
+  <div className="relative rounded-md">
     {links.map((link, idx) => (
       <a
         key={idx}
@@ -54,7 +55,7 @@ const DropdownItem = ({
 );
 const isValidToken = async (auth_token) => {
   try {
-    const response = await fetch("https://rock-bishop-auth.onrender.com/api/auth/login", {
+    const response = await fetch(Auth_URL + "api/auth/login", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -64,7 +65,6 @@ const isValidToken = async (auth_token) => {
     if (!response.ok) {
       return { res: false, name: null };
     }
-    console.log(response);
     const data = await response.json();
     if (data && data.success) {
       return { res: data.success, name: data.user.username };
@@ -73,19 +73,18 @@ const isValidToken = async (auth_token) => {
     return { res: false, name: null };
   }
 };
-const check=async(setLogin)=>{
+const check = async (setLogin) => {
   const auth_token = localStorage.getItem("token");
   if (auth_token) {
-    const name=await isValidToken(auth_token);
-    if(name.res){
+    const name = await isValidToken(auth_token);
+    if (name.res) {
       setLogin(name.name);
-      }
     }
-}
-const Navbar = () => {
-  const [modalShow, setModalShow] = useState(0);
+  }
+};
+const Navbar = ({ login, setLogin, modalShow, setModalShow }) => {
   const nav = useNavigate();
-  const [login, setLogin] = useState(null);
+
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
@@ -94,21 +93,20 @@ const Navbar = () => {
     localStorage.removeItem("token");
     setLogin(null);
   };
-  
 
   useEffect(() => {
     check(setLogin);
   }, []);
 
   return (
-    <header className="bg-nav-color w-full sticky top-0 z-10">
+    <header className="bg-nav-color w-full px-2 py-2 sticky rounded backdrop-blur-xl top-0 z-10">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-          <a
-            onClick={() => nav("/")}
-            className="text-xl font-bold text-white cursor-pointer"
-          >
-            Rock_bishop
-          </a>
+        <a
+          onClick={() => nav("/")}
+          className="text-xl font-bold text-white cursor-pointer"
+        >
+          Rock_bishop
+        </a>
         <div className="flex items-center space-x-4">
           <button
             className="block md:hidden left-0 text-white text-2xl"
@@ -166,14 +164,14 @@ const Navbar = () => {
                 onClick={() => setModalShow(2)}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
               >
-                Sign In
+                Sign Up
               </button>
             </>
           )}
         </div>
       </div>
       {menuOpen && (
-        <div className="md:hidden bg-slate-800 w-full py-2">
+        <div className="md:hidden bg-slate-800  w-full py-2 rounded-lg">
           <DropdownItem
             links={[
               { label: "Play", to: "/game" },
@@ -190,11 +188,7 @@ const Navbar = () => {
         </div>
       )}
 
-      <MyVerticallyCenteredModal
-        show={modalShow}
-        onHide={() => setModalShow(0)}
-        setLogin={setLogin}
-      />
+      
     </header>
   );
 };

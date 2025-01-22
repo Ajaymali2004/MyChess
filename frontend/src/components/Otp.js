@@ -1,6 +1,8 @@
+import { Auth_URL } from "../../backendLinks";
+
 const otpStore = {};
 const sendMail = async (email,otp) => {
-  const response = await fetch("https://rock-bishop-auth.onrender.com/api/auth/verifyUser", {
+  const response = await fetch(Auth_URL+"api/auth/verifyUser", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
