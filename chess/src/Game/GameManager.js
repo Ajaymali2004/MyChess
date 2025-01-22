@@ -21,9 +21,9 @@ class GameManager {
     this.#tmpIDMap = new Map();
   }
   #checkForSameplayer(p1, p2) {
-    // if (p1.user._id === p2.user._id) {
-    //   return true;
-    // }
+    if (p1.user._id === p2.user._id) {
+      return true;
+    }
     return false;
   }
   #handleCreateChallenge(tmpID, socket) {

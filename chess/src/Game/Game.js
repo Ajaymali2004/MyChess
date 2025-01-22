@@ -100,7 +100,7 @@ class Game {
   handleDisconnection(player) {
     if(this.winner!==null)return;
     this.winner = player === "Player 1" ? "b" : "w";
-    this.reason ="Opponent_Disconnected";
+    this.reason ="Opponent_Ran_Away";
     this.Game_over();
   }
   Game_over() {

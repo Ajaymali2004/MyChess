@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "concurrently \"npm run dev\" \"cd../auth && npm start \" \"cd../chess && npm start \""
+    "start": "npm run dev"
   },
   "dependencies": {
     "@uidotdev/usehooks": "^2.4.1",
