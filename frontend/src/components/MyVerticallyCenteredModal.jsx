@@ -185,7 +185,6 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
               required
               className="form-control"
               placeholder="Email address"
-              autoComplete="off"
               onChange={onchange}
             />
             <MdAlternateEmail className="fs-5 m-2" />
