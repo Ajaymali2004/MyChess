@@ -1,6 +1,6 @@
 import React from "react";
 import Loser from "./Loser";
-import Draw from "./draw";
+import Draw from "./Draw";
 import Winner from "./Winner";
 
 export default function GameOver({
