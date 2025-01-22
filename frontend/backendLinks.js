@@ -1,5 +1,5 @@
-const WS_URL = "http://localhost:8080/";
-const Auth_URL="http://localhost:5000/";
+const WS_URL = "https://mychess-websocket.onrender.com/";
+const Auth_URL = "https://mychess-anba.onrender.com/";
 const INIT_GAME = "init_game";
 const MOVE = "move";
 const GAME_OVER = "game_over";
