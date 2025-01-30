@@ -4,7 +4,7 @@ import { CiLinkedin, CiInstagram, CiMail } from "react-icons/ci";
 
 const Footer = () => {
   return (
-    <footer className="text-white py-2 mt-8 sticky bottom-0 backdrop-blur-lg">
+    <footer className="text-white py-2 mt-8 bottom-0 backdrop-blur-lg">
       <div className="container mx-auto text-center">
         <h3 className="text-sm font-semibold mb-2">Connect with me</h3>
         <div className="flex justify-center items-center gap-4 flex-wrap">
