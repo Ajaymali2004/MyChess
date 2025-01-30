@@ -57,7 +57,7 @@ export default function Game() {
           payload: { tmpID },
         })
       );
-      nav("/game", { replace: true });
+      nav("/play", { replace: true });
     }
   }, [socket]);
   useEffect(() => {

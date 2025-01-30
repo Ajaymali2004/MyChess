@@ -32,7 +32,7 @@ export default function PlayButton({ waiting, init, socket }) {
   };
 
   const copyToClipboard = () => {
-    const link = `${window.location.origin}/game/${tmpID}`;
+    const link = `${window.location.origin}/play/${tmpID}`;
     navigator.clipboard.writeText(link).then(
       () => {
         // Show the alert
@@ -83,7 +83,7 @@ export default function PlayButton({ waiting, init, socket }) {
                 onClick={copyToClipboard}
               >
                 <p className="text-blue-400 underline break-all mr-4 relative">
-                  {window.location.origin}/game/{tmpID}
+                  {window.location.origin}/play/{tmpID}
                   <span className="absolute bottom-full right-0 transform -translate-x-1/2 text-xs text-white bg-black p-1 rounded hidden group-hover:block transition-all duration-2000 ease-in-out">
                     Copy the link
                   </span>

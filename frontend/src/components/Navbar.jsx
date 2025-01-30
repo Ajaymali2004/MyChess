@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MyVerticallyCenteredModal from "./MyVerticallyCenteredModal";
 import { Auth_URL } from "../../backendLinks";
 
 const DropdownItem = ({
@@ -117,28 +116,28 @@ const Navbar = ({ login, setLogin, modalShow, setModalShow }) => {
         </div>
         <nav className="hidden md:flex items-center space-x-6">
           <a
-            onClick={() => nav("/game")}
+            onClick={() => nav("/play")}
             className="text-slate-300 hover:text-white cursor-pointer"
           >
             Play
           </a>
           <a
-            onClick={() => nav("/under_construction")}
+            onClick={() => nav("/Learn")}
             className="text-slate-300 hover:text-white cursor-pointer"
           >
             Learn
           </a>
           <a
-            onClick={() => nav("/under_construction")}
+            onClick={() => nav("/Top-Heading")}
             className="text-slate-300 hover:text-white cursor-pointer"
           >
-            Puzzles
+            Top heading
           </a>
           <a
             onClick={() => nav("/under_construction")}
             className="text-slate-300 hover:text-white cursor-pointer"
           >
-            About Me
+            About us
           </a>
         </nav>
         <div className="hidden md:flex items-center space-x-4">

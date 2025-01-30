@@ -17,10 +17,12 @@ export default function BlakeBoard({
   whiteTimer,
   blackTimer,
   setMoves,
+  handleMoveCompletion,
 }) {
   const [from, setFrom] = useState(null);
   const [availableSq, setAvailableSq] = useState([]);
   const [isInCheck, setIsInCheck] = useState(null);
+  const [lastMove, setLastMove] = useState(null);
   const setFromf = (square) => {
     setFrom(square);
     const moves = chess.moves({ square: square, verbose: true });
@@ -42,56 +44,64 @@ export default function BlakeBoard({
       setFrom(null);
       setAvailableSq([]);
 
-      if (socket) {
-        let promo = false;
-        if (
-          (move.from[1] === "7" && move.to[1] === "8") ||
-          (move.from[1] === "2" && move.to[1] === "1")
-        ) {
-          const promotion = chess.get(move.from);
-          if (promotion?.type === "p") {
-            promo = true;
-          }
+      let promo = false;
+      if (
+        (move.from[1] === "7" && move.to[1] === "8") ||
+        (move.from[1] === "2" && move.to[1] === "1")
+      ) {
+        const promotion = chess.get(move.from);
+        if (promotion?.type === "p") {
+          promo = true;
         }
+      }
 
-        const result = promo
-          ? chess.move({ ...move, promotion: "q" })
-          : chess.move(move);
+      const result = promo
+        ? chess.move({ ...move, promotion: "q" })
+        : chess.move(move);
 
-        if (result) {
-          setBoard(chess.board());
-          setMoves((prevMoves) => [...prevMoves, result.san]);
+      if (result) {
+        setBoard(chess.board());
+        setMoves((prevMoves) => [...prevMoves, result.san]);
+        if (handleMoveCompletion) {
+          handleMoveCompletion(move);
+        }
+        if (socket) {
           socket.send(
             JSON.stringify({
               type: MOVE,
               payload: { move, promo },
             })
           );
-        } else console.error("Invalid move attempt");
-      } else console.log("Socket not connected");
+        } else {
+          console.log("Move processed locally in Learn mode");
+        }
+      } else console.error("Invalid move attempt");
     }
   };
+
   useEffect(() => {
     if (!board) return;
-  
+    const history = chess.history({ verbose: true });
+    const result = history.length > 0 ? history[history.length - 1] : null;
+
+    if (result) {
+      const { from, to } = result;
+      setLastMove({ from, to });
+    }
     // Check for checkmate
     if (chess.in_checkmate()) {
       checkmateSound.play();
       setIsInCheck(chess.turn());
       return;
     }
-  
+
     // Check if the king is in check
     if (chess.in_check()) {
       setIsInCheck(chess.turn());
     } else {
       setIsInCheck(null);
     }
-  
-    // Get the last move
-    const history = chess.history({ verbose: true });
-    const result = history.length > 0 ? history[history.length - 1] : null;
-  
+
     if (result) {
       if (result.flags.includes("c")) {
         captureSound.play(); // Capture move
@@ -102,11 +112,11 @@ export default function BlakeBoard({
       } else {
         moveSound.play(); // Normal move
       }
+    } else {
+      setLastMove(null); // Ensure no leftover state
     }
   }, [board]);
-  
-  
-  
+
   const formatTime = (time) => {
     const minutes = Math.floor(time / 60);
     const seconds = time % 60;
@@ -132,9 +142,12 @@ export default function BlakeBoard({
             />
             <span className="ml-2 text-lg font-semibold">{Opponent}</span>
           </div>
-          <span className="text-xl font-bold">
-            {formatTime(isP1 ? blackTimer : whiteTimer)}
-          </span>
+
+          {blackTimer && (
+            <span className="text-xl font-bold">
+              {formatTime(isP1 ? blackTimer : whiteTimer)}
+            </span>
+          )}
         </div>
       )}
 
@@ -155,14 +168,30 @@ export default function BlakeBoard({
             const isHighlighted = availableSq.includes(squareRepresentation);
             const isKingInCheck =
               isInCheck && square?.type === "k" && square?.color === isInCheck;
+            const isLastMoveSquare =
+              lastMove &&
+              (squareRepresentation === lastMove.from ||
+                squareRepresentation === lastMove.to);
             return (
               <div
                 key={`${i}-${j}`}
                 onClick={() => handleSquareClick(squareRepresentation)}
-                className={`relative aspect-square flex items-center justify-center ${squareColor} ${
-                  isKingInCheck ? "bg-red-500" : ""
-                }`}
+                className={`relative aspect-square flex items-center justify-center ${squareColor} 
+    ${isKingInCheck ? "bg-red-500" : ""} 
+    ${isLastMoveSquare ? "border-4 border-blue-400 animate-pulse" : ""}`}
               >
+                {(i === 7 || j === 0) && (
+                  <>
+                    <span className="absolute top-1 left-1 text-[0.5rem] sm:text-xs md:text-sm font-bold text-gray-700 z-0">
+                      {j === 0 && 8 - actualRow} {/* Rank */}
+                    </span>
+                    <span className="absolute bottom-1 right-1 text-[0.5rem] sm:text-xs md:text-sm font-bold text-gray-700 z-0">
+                      {i === 7 && String.fromCharCode(97 + actualcol)}{" "}
+                      {/* File */}
+                    </span>
+                  </>
+                )}
+
                 {isHighlighted && (
                   <div className="absolute w-2/5 h-2/5 bg-yellow-500 opacity-40 rounded-full animate-pulse"></div>
                 )}
@@ -172,7 +201,7 @@ export default function BlakeBoard({
                       square.color === "b" ? square.type : `${square.type}w`
                     }.png`}
                     alt={square.type}
-                    className="w-3/4 h-3/4 object-contain hover:scale-110 transition-transform"
+                    className="w-3/4 h-3/4 object-contain hover:scale-110 transition-transform z-10"
                   />
                 )}
               </div>
@@ -184,7 +213,7 @@ export default function BlakeBoard({
       {Me && (
         <div className="player-info flex items-center justify-between w-full mt-2 text-white">
           <span className="text-xl font-bold">
-            {formatTime(isP1 ? whiteTimer : blackTimer)}
+            {whiteTimer && formatTime(isP1 ? whiteTimer : blackTimer)}
           </span>
           <div className="flex items-center">
             <span className="mr-2 text-lg font-semibold">{Me}</span>
