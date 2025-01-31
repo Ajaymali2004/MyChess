@@ -1,5 +1,4 @@
-const WS_URL = "https://mychess-websocket.onrender.com/";
-const Auth_URL = "https://mychess-anba.onrender.com/";
+
 const INIT_GAME = "init_game";
 const MOVE = "move";
 const GAME_OVER = "game_over";
@@ -10,10 +9,9 @@ const CREAT_CHALLENGE = "create_challenge";
 const CANCEL_CHALLENGE = "canceled_the_challenge";
 const ACCEPT_CHALLENGE = "accept_challenge";
 const TIMER_UPDATE = "timer_update";
+const RESIGN ="resign";
 export {
-  WS_URL,
   TIMER_UPDATE,
-  Auth_URL,
   CREAT_CHALLENGE,
   INIT_GAME,
   GAME_OVER,
@@ -23,4 +21,5 @@ export {
   WAITING_FOR_FRIEND,
   CANCEL_CHALLENGE,
   ACCEPT_CHALLENGE,
+  RESIGN,
 };

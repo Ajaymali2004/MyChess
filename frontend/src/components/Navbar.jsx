@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Auth_URL } from "../../backendLinks";
 
 const DropdownItem = ({
   setLogin,
@@ -53,6 +52,7 @@ const DropdownItem = ({
   </div>
 );
 const isValidToken = async (auth_token) => {
+  const Auth_URL = import.meta.env.VITE_Auth_URL;  
   try {
     const response = await fetch(Auth_URL + "api/auth/login", {
       method: "GET",

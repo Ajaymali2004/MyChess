@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { CANCEL_CHALLENGE, CREAT_CHALLENGE } from "../../../backendLinks";
+import { CANCEL_CHALLENGE, CREAT_CHALLENGE } from "../../../messages";
 
 export default function PlayButton({ waiting, init, socket }) {
   const [tmpID, setTmpID] = useState(null);

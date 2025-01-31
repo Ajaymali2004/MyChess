@@ -5,9 +5,9 @@ import { GiChessKing } from "react-icons/gi";
 import { useNavigate } from "react-router-dom";
 import { MdAlternateEmail } from "react-icons/md";
 import { generateOTP, otpChecker } from "./Otp";
-import { Auth_URL } from "../../backendLinks";
 
 function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
+  const Auth_URL = import.meta.env.VITE_Auth_URL;  
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);

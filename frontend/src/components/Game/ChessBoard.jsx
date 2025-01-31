@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { MOVE } from "../../../backendLinks";
+import { MOVE } from "../../../messages";
 const moveSound = new Audio("/audio/move-self.mp3");
 const captureSound = new Audio("/audio/capture.mp3");
 const castleSound = new Audio("/audio/castle.mp3");
@@ -18,6 +18,7 @@ export default function BlakeBoard({
   blackTimer,
   setMoves,
   handleMoveCompletion,
+  winner,
 }) {
   const [from, setFrom] = useState(null);
   const [availableSq, setAvailableSq] = useState([]);
@@ -30,6 +31,7 @@ export default function BlakeBoard({
   };
 
   const handleSquareClick = (to) => {
+    if(winner)return;
     if (isP1 && chess.turn() === "b") return;
     if (!isP1 && chess.turn() === "w") return;
 
@@ -72,10 +74,8 @@ export default function BlakeBoard({
               payload: { move, promo },
             })
           );
-        } else {
-          console.log("Move processed locally in Learn mode");
         }
-      } else console.error("Invalid move attempt");
+      } 
     }
   };
 

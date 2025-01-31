@@ -14,7 +14,7 @@ import {
   PLAY_AGAIN_REQ,
   PLAY_AGAIN_RES,
   TIMER_UPDATE,
-} from "../../../backendLinks";
+} from "../../../messages";
 import PlayAgainPromt from "./PlayAgainPromt";
 import EndButtonsAndMoveTable from "./EndButtons";
 import { useNavigate, useParams } from "react-router-dom";
@@ -94,7 +94,6 @@ export default function Game() {
           break;
         case GAME_OVER:
           if (winner !== null) {
-            console.log("GAME is already over");
             break;
           }
           setWinner(message.payload.winner);
@@ -149,7 +148,7 @@ export default function Game() {
   };
 
   if (!socket) {
-    return <div>Connecting...</div>;
+    return <div className="text-center font-semibold mt-10">Connecting...</div>;
   }
   return (
     <div className="justify-center flex">
@@ -186,6 +185,7 @@ export default function Game() {
               whiteTimer={whiteTimer}
               blackTimer={blackTimer}
               setMoves={setMoves}
+              winner={winner}
             />
           </div>
           <div className={`${boardClass} flex-row justify-center `}>
@@ -213,6 +213,7 @@ export default function Game() {
                     onNewGame={() => window.location.reload()}
                     waitingForOpponent={waitingForOpponent}
                     DeviceSmall={DeviceSmall}
+                    socket={socket}
                   />
                 </>
               )}

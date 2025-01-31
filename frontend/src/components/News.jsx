@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-
 const News = () => {
   const [news, setNews] = useState([]);
   const [page, setPage] = useState(1); // Track current page
@@ -7,7 +6,8 @@ const News = () => {
   const PAGE_SIZE = 15; // Load 18 articles at a time
   const observerRef = useRef(null);
   const [hasMoreNews, setHasMoreNews] = useState(true);
-  const API_KEY = process.env.API_KEY
+  const API_KEY = import.meta.env.VITE_NEWS_API_KEY;
+
   // Fetch News Function
   const fetchNews = async () => {
     setLoading(true);
@@ -25,7 +25,6 @@ const News = () => {
         setHasMoreNews(false);
       }
     } catch (error) {
-      console.error("Error fetching chess news:", error);
     }
     setLoading(false);
   };
@@ -103,7 +102,7 @@ const News = () => {
         <p className="text-center text-gray-400 mt-4">Loading more news...</p>
       )}
       {!loading && !hasMoreNews && (
-        <p className="text-center text-gray-500 mt-6">End of Page</p>
+        <p className="text-center text-white-500 mt-6">End of Page</p>
       )}
     </div>
   );

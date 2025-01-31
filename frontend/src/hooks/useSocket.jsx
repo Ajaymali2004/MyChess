@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { WS_URL } from "../../backendLinks";
 
 export default function useSocket() {
   const [socket, setSocket] = useState(null);
+  const WS_URL = import.meta.env.VITE_WS_URL
 
   useEffect(() => {
     const token = localStorage.getItem("token");

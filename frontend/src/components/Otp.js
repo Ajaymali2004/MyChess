@@ -1,7 +1,6 @@
-import { Auth_URL } from "../../backendLinks";
-
 const otpStore = {};
 const sendMail = async (email,otp) => {
+  const Auth_URL = import.meta.env.VITE_Auth_URL;  
   const response = await fetch(Auth_URL+"api/auth/verifyUser", {
     method: "POST",
     headers: {
