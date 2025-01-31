@@ -1,4 +1,3 @@
-require("dotenv").config();
 const { WebSocketServer } = require("ws");
 const { GameManager } = require("./src/Game/GameManager.js");
 const { wsConnection } = require("./src/controller/wss.js");

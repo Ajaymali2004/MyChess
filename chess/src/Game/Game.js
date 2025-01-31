@@ -28,7 +28,7 @@ class Game {
     this.whiteTimer = 600;
     this.blackTimer = 600;
     this.winner = null;
-    this.reason = ""
+    this.reason = "";
     this.movesHistory = [];
     this.p1.send(
       JSON.stringify({
@@ -64,7 +64,6 @@ class Game {
         clearInterval(this.connectionMonitor); // Stop further checks
       }
     }, 5000);
-    console.log("Game initialized:");
   }
   updateTimers() {
     if (this.board.turn() === "w" && this.whiteTimer > 0) {
@@ -98,10 +97,17 @@ class Game {
     }
   }
   handleDisconnection(player) {
-    if(this.winner!==null)return;
+    if (this.winner !== null) return;
     this.winner = player === "Player 1" ? "b" : "w";
-    this.reason ="Opponent_Ran_Away";
+    this.reason = "Opponent_Ran_Away";
     this.Game_over();
+  }
+  handleResign(player) {
+    if (this.winner !== null) return;
+    this.winner = player === this.p1 ? "b" : "w";
+    this.reason = "Resignation";
+    this.Game_over();
+    clearInterval(this.timerInterval);
   }
   Game_over() {
     this.p1.send(
@@ -130,7 +136,6 @@ class Game {
       if (!moveResult) return;
       this.movesHistory.push(moveResult.san);
     } catch (e) {
-      console.log(e);
       return;
     }
     this.p1.send(

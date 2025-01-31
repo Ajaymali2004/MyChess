@@ -8,6 +8,7 @@ const {
   CANCEL_CHALLENGE,
   CREAT_CHALLENGE,
   ACCEPT_CHALLENGE,
+  RESIGN,
 } = require("./message.js");
 
 class GameManager {
@@ -39,13 +40,11 @@ class GameManager {
   }
   #handleAcceptChallenge(tmpID, socket) {
     if (this.#tmpIDMap.has(tmpID)) {
-      const waitingSocket= this.#tmpIDMap.get(tmpID);
+      const waitingSocket = this.#tmpIDMap.get(tmpID);
       if (this.#checkForSameplayer(socket, waitingSocket)) return;
       const newGame = new Game(waitingSocket, socket);
       this.#games.push(newGame);
       this.#tmpIDMap.delete(tmpID);
-    } else {
-      console.log("YOUR request is rejected");
     }
   }
   #cancelTmpID(tmpID, socket) {
@@ -68,7 +67,7 @@ class GameManager {
       const game = this.#games.find(
         (game) => game.p1 === socket || game.p2 === socket
       );
-      
+
       switch (mssg.type) {
         case INIT_GAME:
           if (this.#pendingUser) {
@@ -84,9 +83,6 @@ class GameManager {
         case MOVE:
           if (game) {
             game.makeMove(mssg.payload.move, mssg.payload.promo);
-          }
-          else{
-            console.log("NO GAME");
           }
           break;
 
@@ -116,6 +112,10 @@ class GameManager {
         case CANCEL_CHALLENGE:
           this.#cancelTmpID(mssg.payload.tmpID, socket);
           break;
+        case RESIGN:
+          if (game) {
+            game.handleResign(socket);
+          }
       }
     });
   }

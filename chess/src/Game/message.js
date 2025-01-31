@@ -7,5 +7,18 @@ const WAITING_FOR_FRIEND = "waiting_for_friend";
 const CREAT_CHALLENGE = "create_challenge";
 const CANCEL_CHALLENGE = "canceled_the_challenge";
 const ACCEPT_CHALLENGE = "accept_challenge";
-const TIMER_UPDATE="timer_update";
-module.exports ={INIT_GAME,TIMER_UPDATE, MOVE, GAME_OVER,PLAY_AGAIN_REQ,PLAY_AGAIN_RES,WAITING_FOR_FRIEND,CANCEL_CHALLENGE,CREAT_CHALLENGE,ACCEPT_CHALLENGE};
+const TIMER_UPDATE = "timer_update";
+const RESIGN = "resign";
+module.exports = {
+  INIT_GAME,
+  TIMER_UPDATE,
+  MOVE,
+  GAME_OVER,
+  PLAY_AGAIN_REQ,
+  PLAY_AGAIN_RES,
+  WAITING_FOR_FRIEND,
+  CANCEL_CHALLENGE,
+  CREAT_CHALLENGE,
+  ACCEPT_CHALLENGE,
+  RESIGN,
+};
