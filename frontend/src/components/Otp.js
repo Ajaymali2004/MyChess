@@ -9,7 +9,7 @@ const sendMail = async (email,otp) => {
     body: JSON.stringify({ email,otp }),
   });
   const json = await response.json();
-  return json.message;
+  return json;
 };
 const generateOTP = (mail) => {
   const otp = Math.floor(100000 + Math.random() * 900000).toString();

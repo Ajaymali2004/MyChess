@@ -173,9 +173,9 @@ const Navbar = ({ login, setLogin, modalShow, setModalShow }) => {
         <div className="md:hidden bg-slate-800  w-full py-2 rounded-lg">
           <DropdownItem
             links={[
-              { label: "Play", to: "/game" },
-              { label: "Learn", to: "/under_construction" },
-              { label: "Puzzles", to: "/under_construction" },
+              { label: "Play", to: "/play" },
+              { label: "Learn", to: "/Learn" },
+              { label: "Top heading", to: "/Top-Heading" },
               { label: "About Me", to: "/under_construction" },
             ]}
             toggleMenu={toggleMenu}

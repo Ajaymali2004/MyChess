@@ -7,25 +7,31 @@ import { MdAlternateEmail } from "react-icons/md";
 import { generateOTP, otpChecker } from "./Otp";
 
 function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
-  const Auth_URL = import.meta.env.VITE_Auth_URL;  
+  const Auth_URL = import.meta.env.VITE_Auth_URL;
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [data, setData] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const [verifyOption, setVerifyOption] = useState("");
+  const [loginButtonDisabled,setLoginButtonDisabled]=useState(true);
+  const [getButton, setGetButton] = useState(false);
+  const [firstOtpFails, setFirstOtpFails] = useState(false);
+  const [otpFailsMoreThanOne, setOtpFailsMoreThanOne] = useState(true);
   const resetModalState = () => {
     setPasswordVisible(false);
     setOtpSent(false);
     setOtpVerified(false);
-    setVerifyOption("");
+    setGetButton(false);
     setOtp("");
     setError("");
+    setLoginError("");
+    setLoginButtonDisabled(true);
     setData({
       username: "",
       email: "",
@@ -47,22 +53,28 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
     return emailRegex.test(email);
   };
   const sendOtp = async () => {
-    setOtpSent(true);
     const response = await generateOTP(data.email);
-    if (response === "User already exists") setOtpSent(false);
-    setError(response);
+    if (response.success) {
+      setOtpSent(true);
+    } else {
+      setOtpSent(false);
+      setError(response.message);
+    }
   };
 
   const verifyOtp = () => {
     if (otpChecker(data.email, otp)) {
       setOtpVerified(true);
+      setOtpSent(true);
       setError("");
     } else {
       setError("Invalid OTP");
+      setOtpFailsMoreThanOne(false);
+      setFirstOtpFails(true);
     }
   };
   const login = async (email, password) => {
-    const response = await fetch(Auth_URL+"api/auth/login", {
+    const response = await fetch(Auth_URL + "api/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -76,7 +88,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
       handleClose();
       navigate("./");
     } else {
-      setError(json.message);
+      setLoginError(json.message);
     }
   };
 
@@ -86,7 +98,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
   };
 
   const signIn = async (username, email, password) => {
-    const response = await fetch(Auth_URL+"api/auth/signin", {
+    const response = await fetch(Auth_URL + "api/auth/signin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -114,7 +126,8 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
     setData({ ...data, [e.target.name]: e.target.value });
 
     if (e.target.name === "email" && validateEmail(e.target.value)) {
-      setVerifyOption("Verify your email");
+      setGetButton(true);
+      setLoginButtonDisabled(false);
     }
   };
 
@@ -140,12 +153,12 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
         </Modal.Header>
         <Modal.Body>
           {show === 1 ? (
-            <h5 className="d-flex justify-content-center fs-3">
+            <h5 className="d-flex justify-content-center fs-3 pb-3">
               Welcome back <GiChessKing className="fs-1 pb-1 fc-b" />
             </h5>
           ) : (
             <>
-              <h5 className="d-flex justify-content-center fs-3">
+              <h5 className="d-flex justify-content-center fs-3 pb-3">
                 Welcome to the Rock_bishop{" "}
                 <GiChessKing className="fs-1 pb-1 fc-b" />
               </h5>
@@ -165,18 +178,8 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
           )}
           {show !== 1 && !otpSent && (
             <div className="d-flex justify-content-between mt-2">
-            {error && error === "User already exists" && (
-              <span className="text-danger">{error}</span>
-            )}
-            <span
-              onClick={sendOtp}
-              className="text-info"
-              style={{ fontSize: "0.875rem", cursor: "pointer" }}
-            >
-              {verifyOption}
-            </span>
-          </div>
-          
+              {error && <span className="text-danger">{error}</span>}
+            </div>
           )}
           <div className="mb-3 d-flex">
             <input
@@ -185,13 +188,23 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
               required
               className="form-control"
               placeholder="Email address"
+              value={data.email}
               onChange={onchange}
             />
-            <MdAlternateEmail className="fs-5 m-2" />
+            {getButton && show !== 1 ? (
+              <Button
+                variant="outline-secondary"
+                className="ms-2"
+                onClick={sendOtp}
+                disabled={!validateEmail(data.email) || otpSent}
+              >
+                {otpSent ? "Sent" : "Get"}
+              </Button>
+            ) : (
+              <MdAlternateEmail className="fs-5 m-2" />
+            )}
           </div>
-          {error && error !== "User already exists" && (
-            <p className="text-danger">{error}</p>
-          )}
+
           {otpSent && (
             <div className="mb-3 d-flex">
               <input
@@ -202,9 +215,28 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
                 value={otp}
                 onChange={handleOtpChange}
               />
-              <Button variant="outline-secondary" onClick={verifyOtp}>
+              {firstOtpFails && (
+                <Button
+                  variant="outline-secondary"
+                  className="ms-2"
+                  onClick={sendOtp}
+                  disabled={otpFailsMoreThanOne}
+                >
+                  Resend
+                </Button>
+              )}
+              <Button
+                variant="outline-secondary"
+                className="ms-2"
+                onClick={verifyOtp}
+              >
                 Check
               </Button>
+            </div>
+          )}
+          {show === 1 && (
+            <div className="d-flex justify-content-between mx-1">
+              {loginError && <span className="text-danger">{loginError}</span>}
             </div>
           )}
           <div className="mb-3 d-flex">
@@ -229,7 +261,7 @@ function MyVerticallyCenteredModal({ show, onHide, setLogin }) {
 
         <Modal.Footer>
           {show === 1 ? (
-            <Button onClick={handleLogin}>Login</Button>
+            <Button onClick={handleLogin} disabled={loginButtonDisabled}>Login</Button>
           ) : (
             <Button
               onClick={handleSignIn}
